@@ -94,7 +94,7 @@ flowchart TB
 
     subgraph T2["Loaded when file context matches"]
         direction LR
-        B1["<subdir>/CLAUDE.md\nCC · agent decides"]:::cc
+        B1["any subdir/CLAUDE.md\nCC · agent decides"]:::cc
         B2[".cursor/rules/sh-scoped.mdc\nCursor · *.sh open"]:::cursor
         B3[".cursor/rules/py-scoped.mdc\nCursor · *.py open"]:::cursor
     end
