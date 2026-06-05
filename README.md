@@ -82,34 +82,37 @@ flowchart TB
     classDef cc fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
     classDef cursor fill:#fef9c3,stroke:#ca8a04,color:#713f12
     classDef shared fill:#dcfce7,stroke:#16a34a,color:#14532d
+    classDef external fill:#f3e8ff,stroke:#9333ea,color:#3b0764
 
     subgraph T1["Always loaded at startup"]
-        A1["~/.claude/CLAUDE.md\nCC · user-level"]:::cc
+        direction LR
+        A1["~/.claude/CLAUDE.md\nCC · external to repo"]:::external
         A2["CLAUDE.md\nboth tools"]:::shared
         A3[".cursorrules\nCursor"]:::cursor
-        A4["always-on.mdc\nCursor"]:::cursor
+        A4[".cursor/rules/always-on.mdc\nCursor"]:::cursor
     end
 
     subgraph T2["Loaded when file context matches"]
-        B1["src/CLAUDE.md\nCC · agent decides"]:::cc
-        B2["sh-scoped.mdc\nCursor · *.sh open"]:::cursor
-        B3["py-scoped.mdc\nCursor · *.py open"]:::cursor
+        direction LR
+        B1["<subdir>/CLAUDE.md\nCC · agent decides"]:::cc
+        B2[".cursor/rules/sh-scoped.mdc\nCursor · *.sh open"]:::cursor
+        B3[".cursor/rules/py-scoped.mdc\nCursor · *.py open"]:::cursor
     end
 
     subgraph T3["Fetched when topic matches"]
+        direction LR
         C1["any repo file\nCC · via Read tool"]:::cc
-        C2["agent-requested.mdc\nCursor · description match"]:::cursor
+        C2[".cursor/rules/agent-requested.mdc\nCursor · description match"]:::cursor
     end
 
     subgraph T4["User-invoked"]
+        direction LR
         D1[".claude/commands/\nClaude Code"]:::cc
         D2[".cursor/commands/\nCursor"]:::cursor
     end
-
-    T1 --> T2 --> T3 --> T4
 ```
 
-Blue = Claude Code only · Yellow = Cursor only · Green = both tools
+All paths relative to repo root unless noted · Blue = Claude Code · Yellow = Cursor · Green = both tools · Purple = external to repo
 
 ---
 
