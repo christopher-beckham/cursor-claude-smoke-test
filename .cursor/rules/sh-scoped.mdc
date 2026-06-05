@@ -1,0 +1,22 @@
+---
+description: Shell script conventions, applied when .sh files are in context
+globs: **/*.sh
+alwaysApply: false
+---
+
+SMOKE_RULE_SH_SCOPED
+
+## Shell script conventions
+
+- Every script must start with `#!/usr/bin/env bash` and `set -euo pipefail`.
+- Quote all variable expansions: `"${VAR}"` not `$VAR`. Use `${VAR:-default}` for
+  optional variables with a fallback.
+- Never parse `ls` output. Use globs or `find` instead.
+- Prefer `[[` over `[` for conditionals.
+- Check that required environment variables are set at the top of the script before
+  doing any work:
+  ```bash
+  : "${DATA_DIR:?DATA_DIR must be set}"
+  ```
+- Use `mktemp` for temporary files. Clean them up with a `trap` on EXIT.
+- When calling Python, use `python3` explicitly — never bare `python`.

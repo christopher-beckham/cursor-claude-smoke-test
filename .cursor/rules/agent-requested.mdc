@@ -1,0 +1,49 @@
+---
+description: Deployment runbook and environment setup. Fetch this when the user asks about deploying, running in production, setting up the environment, or configuring environment variables.
+alwaysApply: false
+---
+
+SMOKE_RULE_AGENT_REQUESTED
+
+## Deployment runbook
+
+### Required environment variables
+
+| Variable | Description | Example |
+|---|---|---|
+| `DATA_DIR` | Root directory for input/output CSV files | `/srv/pipeline/data` |
+| `LOG_LEVEL` | Python logging level | `INFO` |
+| `DB_URL` | PostgreSQL connection string for audit log | `postgresql://user:pass@host/db` |
+| `ALERT_EMAIL` | Address to notify on pipeline failure | `oncall@example.com` |
+
+### First-time setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+mkdir -p "${DATA_DIR}/input" "${DATA_DIR}/output" "${DATA_DIR}/archive"
+```
+
+### Running the pipeline
+
+```bash
+export DATA_DIR=/srv/pipeline/data
+export LOG_LEVEL=INFO
+bash src/run.sh
+```
+
+### Cron schedule (production)
+
+```cron
+0 6 * * * /srv/pipeline/src/run.sh >> /var/log/pipeline.log 2>&1
+```
+
+The script handles its own locking via a `.lock` file in `$DATA_DIR` — do not run two
+instances concurrently.
+
+### Rollback
+
+If a bad output file is produced, the originals are archived to `$DATA_DIR/archive/`
+before processing. Restore by copying the archived file back to `$DATA_DIR/input/`.

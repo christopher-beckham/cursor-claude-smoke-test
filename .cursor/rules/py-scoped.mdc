@@ -1,0 +1,22 @@
+---
+description: Python conventions, applied when .py files are in context
+globs: **/*.py
+alwaysApply: false
+---
+
+SMOKE_RULE_PY_SCOPED
+
+## Python conventions
+
+- Type hints are required on all function signatures. Use `from __future__ import annotations`
+  at the top of every module so forward references work without quotes.
+- Use `pathlib.Path` for all filesystem operations. Do not use `os.path`, `os.getcwd()`,
+  or string concatenation to build paths.
+- Use `logging.getLogger(__name__)` at module level. Do not use `print` for output
+  that isn't user-facing CLI output.
+- Prefer `dataclasses.dataclass` over plain dicts for structured data. Add `frozen=True`
+  unless mutation is explicitly needed.
+- CSV reading must go through `csv.DictReader` — do not split on commas manually.
+- Raise specific exceptions (`ValueError`, `FileNotFoundError`) with context. Do not
+  raise bare `Exception`.
+- Tests live in `tests/` and use `pytest`. Name test functions `test_<what>_<condition>`.

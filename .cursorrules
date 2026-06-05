@@ -1,0 +1,13 @@
+SMOKE_CURSOR_LEGACY
+
+This is the legacy Cursor rules file (.cursorrules). It is always read by Cursor.
+New projects should use .cursor/rules/*.mdc instead.
+
+## Project conventions (legacy)
+
+- Python 3.11+. Use `python3` explicitly in shell scripts.
+- All configuration comes from environment variables. Never hardcode paths, credentials,
+  or hostnames.
+- Log to stdout using the standard `logging` module. Do not write log files.
+- CSV input files live in $DATA_DIR/input/. Processed output goes to $DATA_DIR/output/.
+- When something fails, exit non-zero with a clear error message. Do not swallow errors.

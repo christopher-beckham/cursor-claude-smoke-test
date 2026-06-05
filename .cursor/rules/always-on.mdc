@@ -1,0 +1,18 @@
+---
+description: Core project conventions, injected on every turn
+alwaysApply: true
+---
+
+SMOKE_RULE_ALWAYS_ON
+
+## Core conventions (always active)
+
+- No hardcoded credentials, hostnames, or absolute paths. All configuration comes from
+  environment variables (`DATA_DIR`, `DB_URL`, `LOG_LEVEL`, etc.).
+- Log to stdout via Python's `logging` module or shell `echo` to stderr for errors.
+  Never write log files inside the repo.
+- Exit non-zero on failure with a human-readable message. Never silently swallow errors.
+- Commit messages must be imperative mood ("Add validator", not "Added validator"),
+  max 72 characters on the subject line.
+- Do not suggest `sudo` for anything in this project. If a permission error occurs,
+  fix the file ownership or use a virtual environment instead.
