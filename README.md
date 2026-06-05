@@ -1,8 +1,10 @@
 # cursor-smoke-test
 
-A minimal repo for testing what Cursor's agent picks up from various rule and context artifacts.
+A minimal repo for testing what Cursor and Claude Code pick up from various rule and context artifacts.
+If you're confused like me about how all the dot files interact and what Cursor/Claude picks up vs doesn't,
+this repo is for you.
 
-**Test environment:** Cursor Composer 2.5
+**Test environment:** Cursor Composer 2.5, 2.1.165 (Claude Code)
 
 **Use case:** A Python CSV ingestion pipeline with shell scripts for orchestration. Rules are
 grounded in real conventions for that kind of project.
@@ -73,9 +75,47 @@ fetches the full body only when it decides the description matches what the user
 The `description:` field is the retrieval key. Claude Code doesn't need this pattern because it
 can call `Read` on any file directly.
 
+### Visual explanation
+
+```mermaid
+flowchart TB
+    classDef cc fill:#dbeafe,stroke:#3b82f6,color:#1e3a5f
+    classDef cursor fill:#fef9c3,stroke:#ca8a04,color:#713f12
+    classDef shared fill:#dcfce7,stroke:#16a34a,color:#14532d
+
+    subgraph T1["Always loaded at startup"]
+        A1["~/.claude/CLAUDE.md\nCC · user-level"]:::cc
+        A2["CLAUDE.md\nboth tools"]:::shared
+        A3[".cursorrules\nCursor"]:::cursor
+        A4["always-on.mdc\nCursor"]:::cursor
+    end
+
+    subgraph T2["Loaded when file context matches"]
+        B1["src/CLAUDE.md\nCC · agent decides"]:::cc
+        B2["sh-scoped.mdc\nCursor · *.sh open"]:::cursor
+        B3["py-scoped.mdc\nCursor · *.py open"]:::cursor
+    end
+
+    subgraph T3["Fetched when topic matches"]
+        C1["any repo file\nCC · via Read tool"]:::cc
+        C2["agent-requested.mdc\nCursor · description match"]:::cursor
+    end
+
+    subgraph T4["User-invoked"]
+        D1[".claude/commands/\nClaude Code"]:::cc
+        D2[".cursor/commands/\nCursor"]:::cursor
+    end
+
+    T1 --> T2 --> T3 --> T4
+```
+
+Blue = Claude Code only · Yellow = Cursor only · Green = both tools
+
 ---
 
 ## 3. Probe results (Composer 2.5)
+
+(To see probe results for Claude, see `README_CLAUDE_CODE.md`.)
 
 ### Probe 1 — Always-on rules (no file open)
 
